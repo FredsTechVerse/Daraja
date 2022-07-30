@@ -3,7 +3,7 @@ const request = require("request");
 const unirest = require("unirest");
 const app = express();
 
-const port = process.env.PORT || "3002";
+const port = process.env.PORT || "3003";
 
 app.get("/", (req, res) => {
   res.status(200).send("Hakuna Matata from the daraja API");
@@ -12,20 +12,14 @@ app.get("/", (req, res) => {
 app.get("/access_token", (req, res) => {
   let url =
     "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-  //   let auth = new Buffer.from(
-  //     "e99MXkXLg0fIeKAnWeJmSfGmwULfPnKT:qLsiB3aRqOHHgQ4t"
-  //   ).toString("base64");
-
-  let new_auth =
-    "Bearer cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==";
 
   request(
     {
       url: url,
       headers: {
-        Authorization:
-          "Bearer cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==",
-      },
+        'Authorization':
+          'Basic NYMLe9JJIx7NwW3hV2UJDTrU0QUJ3kXC:YvHXGoIdK1yzcRT7',
+              },
     },
     (error, response, body) => {
       if (error) {
@@ -44,7 +38,7 @@ app.get("/access_tokenz", (request, response) => {
   )
     .headers({
       'Authorization':
-        'Bearer cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==',
+        'Basic NYMLe9JJIx7NwW3hV2UJDTrU0QUJ3kXC:YvHXGoIdK1yzcRT7',
     })
     .send()
     .end((res) => {
