@@ -18,7 +18,7 @@ app.get("/access_token", (req, res) => {
       url: url,
       headers: {
         'Authorization':
-          'Basic NYMLe9JJIx7NwW3hV2UJDTrU0QUJ3kXC:YvHXGoIdK1yzcRT7',
+          'Basic TllNTGU5SkpJeDdOd1czaFYyVUpEVHJVMFFVSjNrWEM6WXZIWEdvSWRLMXl6Y1JUNw==',
               },
     },
     (error, response, body) => {
@@ -38,7 +38,7 @@ app.get("/access_tokenz", (request, response) => {
   )
     .headers({
       'Authorization':
-        'Basic NYMLe9JJIx7NwW3hV2UJDTrU0QUJ3kXC:YvHXGoIdK1yzcRT7',
+        'Basic TllNTGU5SkpJeDdOd1czaFYyVUpEVHJVMFFVSjNrWEM6WXZIWEdvSWRLMXl6Y1JUNw==',
     })
     .send()
     .end((res) => {
