@@ -21,29 +21,65 @@ const token_url =
   "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 const express_url =
   "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
-const buffer = new Buffer.from(consumer_key + ":" + consumer_secret);
-const correspodent_string = buffer.toString("base64");
-const item = "bag";
-const express_data = {
-  BusinessShortCode: 174379,
-  Password:
-    "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjIwODAyMDA1MjEy",
-  Timestamp: "20220802005212",
+
+// LIST OF KEY FUNCTIONS
+//=======================
+// (Shortcode+Passkey+Timestamp)
+const passwordEncrypt = (till, key, stamp) => {
+  return new Buffer.from(till + key + stamp).toString("base64");
+};
+
+const correspodent_string = new Buffer.from(
+  consumer_key + ":" + consumer_secret
+).toString("base64");
+
+function pad2(n) {
+  return n < 10 ? "0" + n : n;
+}
+
+let concat_timestamp = (year, month, day, hour, minutes, seconds) => {
+  return year + month + day + hour + minutes + seconds;
+};
+let generate_timestamp = () => {
+  var date = new Date();
+  let year = date.getFullYear().toString();
+  let month = pad2(date.getMonth() + 1);
+  let day = pad2(date.getDate());
+  let hour = pad2(date.getHours());
+  let minutes = pad2(date.getMinutes());
+  let seconds = pad2(date.getSeconds());
+
+  let timestamp = concat_timestamp(year, month, day, hour, minutes, seconds);
+
+  return timestamp;
+};
+
+// LIST OF VARIABLES
+//===================
+let item = "bag";
+let obtained_token = "7IE0nGaTMi9SiqPeG3G2sw9CnrFK"; //The issue is this being blank. Figure it out.
+
+let tillNumber = 174379;
+let passKey =
+  "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+let timestamp = generate_timestamp();
+let password = passwordEncrypt(tillNumber, passKey, timestamp);
+let stkPushNo = 254112615416;
+let amount = 10;
+
+const expressBody = {
+  BusinessShortCode: tillNumber,
+  Password: password,
+  Timestamp: timestamp,
   TransactionType: "CustomerPayBillOnline",
-  Amount: 1,
-  PartyA: 254112615416,
-  PartyB: 174379,
-  PhoneNumber: 254112615416,
+  Amount: amount,
+  PartyA: stkPushNo,
+  PartyB: tillNumber,
+  PhoneNumber: stkPushNo,
   CallBackURL: "https://mydomain.com/path",
   AccountReference: "FredzTech Co.",
   TransactionDesc: `Payment of ${item}`,
 };
-
-// console.log(express_data);
-
-// let obtained_token = "bwlslYYpaihVJxGd3mA4aUmorAHb";
-
-// let obtained_token = "";  //The issue is this being blank. Figure it out.
 
 const auth_token2 = async () => {
   await axios({
@@ -55,25 +91,32 @@ const auth_token2 = async () => {
   })
     .then((response) => {
       let { access_token } = response.data;
-      obtained_token = access_token;
-      console.log(obtained_token);
+      console.log(access_token);
       // res.status(200).json(response);
     })
     .catch((error) => {
-      console.log(`Woops! This is the error that occured : ${error}`);
+      console.log(`Woops! Access Token error that occured : ${error}`);
       // res.status(500).json({ message: error });
     });
 };
 
-const mpesa_express2 = () => {
-  let token = "bwlslYYpaihVJxGd3mA4aUmorAHb";
+// const data = async () => {
+//   let data = await auth_token2();
+//   return data;
+// };
+
+// console.log(`Here : ${data()}`);
+// let data = auth_token2();
+// console.log(data);
+
+const mpesa_express2 = async () => {
   axios({
     url: express_url,
     method: "post",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${obtained_token}`,
     },
-    data: express_data,
+    data: expressBody,
   })
     .then((response) => {
       let { data } = response;
@@ -81,7 +124,7 @@ const mpesa_express2 = () => {
       // res.status(200).json(response);
     })
     .catch((error) => {
-      console.log(`Woops! This is the error that occured : ${error}`);
+      console.log(`Woops! Mpesa Express error that occured : ${error}`);
       // res.status(500).json({ message: error });
     });
 };
