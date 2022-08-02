@@ -4,14 +4,6 @@ const unirest = require("unirest");
 const app = express();
 const axios = require("axios");
 const port = process.env.PORT || "3003";
-//JUST MESSING AROUND WITH THE DATE OBJECT.
-//===========================================
-
-// const d = new Date(2018, 11, 24, 10, 33, 30, 0);
-// console.log(d);
-
-const time_stamp = new Date("October 13, 2014 11:13:00").toString();
-console.log(time_stamp);
 
 // ITEMS THAT NEED TO BE STORED IN A .ENV FILE
 //============================================
@@ -25,6 +17,7 @@ const express_url =
 // LIST OF KEY FUNCTIONS
 //=======================
 // (Shortcode+Passkey+Timestamp)
+
 const passwordEncrypt = (till, key, stamp) => {
   return new Buffer.from(till + key + stamp).toString("base64");
 };
@@ -92,7 +85,7 @@ const obtainAccessToken = async (req, res) => {
     .then((response) => {
       let { access_token } = response.data;
       console.log(access_token);
-      res.status(200).json(access_token);
+      res.status(200).json({ token: access_token });
     })
     .catch((error) => {
       console.log(`Woops! Access Token error that occured : ${error}`);
@@ -100,7 +93,7 @@ const obtainAccessToken = async (req, res) => {
     });
 };
 
-const mpesaExpressInt = async (req, res) => {
+const mpesaExpressInt = (req, res) => {
   axios({
     url: express_url,
     method: "post",
