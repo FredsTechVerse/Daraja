@@ -67,7 +67,7 @@ let password = passwordEncrypt(tillNumber, passKey, timestamp);
 let stkPushNo = 254112615416;
 let amount = 10;
 
-const expressBody = {
+const mpesaExpressBody = {
   BusinessShortCode: tillNumber,
   Password: password,
   Timestamp: timestamp,
@@ -81,7 +81,7 @@ const expressBody = {
   TransactionDesc: `Payment of ${item}`,
 };
 
-const auth_token2 = async () => {
+const obtainAccessToken = async (req, res) => {
   await axios({
     url: token_url,
     method: "get",
@@ -92,77 +92,42 @@ const auth_token2 = async () => {
     .then((response) => {
       let { access_token } = response.data;
       console.log(access_token);
-      // res.status(200).json(response);
+      res.status(200).json(access_token);
     })
     .catch((error) => {
       console.log(`Woops! Access Token error that occured : ${error}`);
-      // res.status(500).json({ message: error });
+      res.status(500).json({ message: error });
     });
 };
 
-// const data = async () => {
-//   let data = await auth_token2();
-//   return data;
-// };
-
-// console.log(`Here : ${data()}`);
-// let data = auth_token2();
-// console.log(data);
-
-const mpesa_express2 = async () => {
+const mpesaExpressInt = async (req, res) => {
   axios({
     url: express_url,
     method: "post",
     headers: {
       Authorization: `Bearer ${obtained_token}`,
     },
-    data: expressBody,
+    data: mpesaExpressBody,
   })
     .then((response) => {
       let { data } = response;
       console.log(data);
-      // res.status(200).json(response);
+      res.status(200).json(data);
     })
     .catch((error) => {
       console.log(`Woops! Mpesa Express error that occured : ${error}`);
-      // res.status(500).json({ message: error });
+      res.status(500).json({ message: error });
     });
 };
 
-// auth_token2();
-
-mpesa_express2();
-
+// EXPRESS ROUTES DEFINATION
+//============================
 app.get("/", (req, res) => {
   res.status(200).send("Hakuna Matata from the daraja API");
 });
 
-app.get("/access_tokenz", (request, response) => {
-  let req = unirest(
-    "GET",
-    "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-  )
-    .headers({
-      Authorization: `Basic ${correspodent_string}`,
-    })
-    .send()
-    .end((res) => {
-      // if (res.error) throw new Error(res.error);
-      if (res.error) {
-        response.send(res.error);
-      }
-      let access_token = res.body.access_token;
-      let expiration_time = res.body.expires_in;
-      let token = [access_token, expiration_time];
-      response.status(200).send(access_token);
-    });
-});
-
-app.get("/token", (request, response) => {
-  let token = auth_token();
-
-  response.status(200).send(token);
-});
+app.get("/token", obtainAccessToken);
+app.get("/express", mpesaExpressInt);
 
 app.listen(port, () => {
   console.log(`Listening successfully on port ${port}`);
