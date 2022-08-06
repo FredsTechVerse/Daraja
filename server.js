@@ -6,7 +6,8 @@ const axios = require("axios");
 const port = process.env.PORT || "3003";
 const cors = require("cors");
 const Customer = require("./Models/Customer");
-
+const Simple = require("./Models/Simple");
+const mongoose = require("mongoose");
 // ITEMS THAT NEED TO BE STORED IN A .ENV FILE
 //============================================
 const consumer_key = "NYMLe9JJIx7NwW3hV2UJDTrU0QUJ3kXC";
@@ -57,7 +58,18 @@ let passKey =
   "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
 let timestamp = generate_timestamp();
 let password = passwordEncrypt(tillNumber, passKey, timestamp);
+// BRINGING THE DB ON BOARD
+//==========================
+mongoose.connect(connection_url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error: "));
+db.once("open", function () {
+  console.log("The database has been connected to the express server.");
+});
 // ESSENTIAL MIDDLEWARES.
 //========================
 app.use(express.urlencoded({ extended: true }));
@@ -126,16 +138,21 @@ app.get("/", (req, res) => {
   res.status(200).send("Hakuna Matata from the daraja API");
 });
 
-app.get("/token", obtainAccessToken);
-
 app.post("/express", obtainAccessToken, mpesaExpressInt);
 
-app.post("/confirmation", (req, res) => {
-  console.log(req);
+app.post("/confirmation", async (req, res) => {
   let message = req.body;
-  console.log(message);
-  // THIS IS WHERE WE SHALL TAKE THE MESSAGE FURTHER TO OUR DB.
-  res.status(200).json("Okay.The message is well received.");
+  let dbBody = {
+    count: 1,
+  };
+  try {
+    const simple = await Simple.create(dbBody);
+    await simple.save();
+    res.status(200).send(simple);
+  } catch (error) {
+    let err = error;
+    res.status(500).send(err);
+  }
 });
 
 app.post("/validation", (req, res) => {
