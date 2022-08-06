@@ -66,7 +66,7 @@ app.use(cors());
 
 //CUSTOM MIDDLEWARES
 //==================
-const obtainAccessToken = async (req, res) => {
+const obtainAccessToken = async (req, res, next) => {
   await axios({
     url: token_url,
     method: "get",
@@ -74,24 +74,25 @@ const obtainAccessToken = async (req, res) => {
       Authorization: `Basic ${correspodent_string}`,
     },
   })
-    .then((response) => {
-      let { access_token } = response.data;
-      console.log(access_token);
-      res.status(200).json({ token: access_token });
+    .then(async (response) => {
+      req.body.access_token = await response.data.access_token;
+      console.log(req.body);
+      next();
     })
     .catch((error) => {
-      console.log(`Woops! Access Token error that occured : ${error}`);
+      console.log(
+        `Woops! Error that occured while obtaining the Access Token : ${error}`
+      );
       res.status(500).json({ message: error });
     });
 };
 
 const mpesaExpressInt = (req, res) => {
-  console.log(req.body);
   axios({
     url: express_url,
     method: "post",
     headers: {
-      Authorization: `Bearer ${req.body.token}`,
+      Authorization: `Bearer ${req.body.access_token}`,
     },
     data: {
       BusinessShortCode: tillNumber,
@@ -108,13 +109,14 @@ const mpesaExpressInt = (req, res) => {
     },
   })
     .then((response) => {
-      let { data } = response;
-      console.log(data);
-      res.status(200).json(data);
+      // let { data } = response;
+      // console.log(data);
+      console.log(response.data);
+      // res.status(200).json(data);
     })
     .catch((error) => {
       console.log(`Mpesa Express error : ${error}`);
-      res.status(302).json(error);
+      // res.status(302).json(error);
     });
 };
 
@@ -126,13 +128,14 @@ app.get("/", (req, res) => {
 
 app.get("/token", obtainAccessToken);
 
-app.post("/express", mpesaExpressInt);
+app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", (req, res) => {
+  console.log(req);
   let message = req.body;
-
+  console.log(message);
   // THIS IS WHERE WE SHALL TAKE THE MESSAGE FURTHER TO OUR DB.
-  res.status(200).send(message);
+  res.status(200).json("Okay.The message is well received.");
 });
 
 app.post("/validation", (req, res) => {
