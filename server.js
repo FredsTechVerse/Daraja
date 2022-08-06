@@ -102,7 +102,7 @@ const mpesaExpressInt = (req, res) => {
       PartyA: req.body.stkPushNo,
       PartyB: tillNumber,
       PhoneNumber: req.body.stkPushNo,
-      CallBackURL: "https://mydomain.com/path",
+      CallBackURL: "https://daraja-integration.herokuapp.com/confirmation",
       AccountReference: "Daraja 2.0",
       TransactionDesc: `Payment of ${item}`,
     },
