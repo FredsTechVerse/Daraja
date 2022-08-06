@@ -120,11 +120,22 @@ const mpesaExpressInt = (req, res) => {
       TransactionDesc: `Payment of ${item}`,
     },
   })
-    .then((response) => {
+    .then(async (response) => {
       // let { data } = response;
       // console.log(data);
-      console.log(response.data);
       // res.status(200).json(data);
+
+      let dbBody = {
+        count: 2,
+      };
+      try {
+        console.log(response.data);
+        const simple = await Simple.create(dbBody);
+        await simple.save();
+        console.log("Done creating the model.");
+      } catch (error) {
+        let err = error;
+      }
     })
     .catch((error) => {
       console.log(`Mpesa Express error : ${error}`);
@@ -143,7 +154,7 @@ app.post("/express", obtainAccessToken, mpesaExpressInt);
 app.post("/confirmation", async (req, res) => {
   let message = req.body;
   let dbBody = {
-    count: 1,
+    count: 3,
   };
   try {
     const simple = await Simple.create(dbBody);
