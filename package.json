@@ -4,7 +4,7 @@
   "description": "All about Integrating DARAJA 2.0 to applications",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "author": "Alfred Githinji",
   "license": "ISC",
