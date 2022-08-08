@@ -1,12 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-let tableDetails = [
-  amountTransacted,
-  mpesaReceiptNumber,
-  transactionDate,
-  phoneNumber,
-];
 const TableDetailSchema = new Schema({
   amountTransacted: {
     type: Number,
