@@ -157,6 +157,13 @@ app.post("/confirmation", async (req, res) => {
     count: 3,
   };
   try {
+    console.log(
+      "********************Start of Body**********************************"
+    );
+    console.log(req.body);
+    console.log(
+      "********************End of Body**********************************"
+    );
     const simple = await Simple.create(dbBody);
     await simple.save();
     res.status(200).send(simple);
