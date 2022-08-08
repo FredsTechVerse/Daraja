@@ -152,17 +152,18 @@ app.get("/", (req, res) => {
 app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", async (req, res) => {
-  let message = req.body.Body;
-  let dbBody = {
-    count: 3,
-  };
+  let { ResultCode, ResultDesc } = req.body.Body;
+
+  console.log(`${ResultCode} ************* ${ResultDesc}`);
+  let { CallbackMetadata: message } = req.body.Body;
+  // let dbBody = {
+  //   count: 3,
+  // };
   try {
     console.log(
-      "********************Start of Body**********************************"
-    );
-    console.log(message);
-    console.log(
-      "********************End of Body**********************************"
+      `********************Start of Message**********************************
+      ${message} 
+      ********************End of Message*****(*******************************`
     );
     // const simple = await Simple.create(dbBody);
     // await simple.save();
