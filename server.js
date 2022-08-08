@@ -157,6 +157,7 @@ app.post("/confirmation", async (req, res) => {
   //=================
 
   let mainBody = req.body.Body.stkCallback;
+  let stringBody = JSON.stringify(mainBody);
 
   let {
     MerchantRequestID,
@@ -193,6 +194,7 @@ app.post("/confirmation", async (req, res) => {
              ==> ${ResultDesc}
              ===> ${MerchantRequestID}
              ====> ${CheckoutRequestID}`);
+    console.log(stringBody);
     console.log(dataTypes);
     console.log(tableDetails);
 
