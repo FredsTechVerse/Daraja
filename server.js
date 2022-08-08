@@ -152,8 +152,7 @@ app.get("/", (req, res) => {
 app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", async (req, res) => {
-  let message = req.body;
-  let message_js = JSON.parse(message);
+  let message = req.body.Body.CallbackMetadata;
   let dbBody = {
     count: 3,
   };
@@ -161,7 +160,7 @@ app.post("/confirmation", async (req, res) => {
     console.log(
       "********************Start of Body**********************************"
     );
-    console.log(message_js);
+    console.log(message);
     console.log(
       "********************End of Body**********************************"
     );
