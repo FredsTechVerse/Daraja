@@ -158,7 +158,7 @@ app.post("/confirmation", async (req, res) => {
   let JsData = JSON.parse(data);
 
   console.log(`The main guy ====> ${data}`);
-  console.log(`The secondary guy ====> ${JsData}`);
+  console.log(`The secondary guy ====> ${JsData}`); //This is good. It works in destructuring phase but cannot be console.logged.
 
   let { ResultCode, ResultDesc } = JsData;
 
@@ -170,7 +170,8 @@ app.post("/confirmation", async (req, res) => {
   try {
     console.log(
       `********************Start of Message**********************************
-      ${message} 
+      ${message.item} 
+      
       *********************End of Message*************************************`
     );
     // const simple = await Simple.create(dbBody);
