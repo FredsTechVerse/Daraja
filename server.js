@@ -158,6 +158,9 @@ app.post("/confirmation", async (req, res) => {
     //=================
     let mainBody = req.body.Body.stkCallback;
 
+    let strBody = JSON.stringify(mainBody);
+    console.log(strBody);
+
     let { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } =
       mainBody;
 
@@ -180,6 +183,7 @@ app.post("/confirmation", async (req, res) => {
 
       const row = await TableDetail.create(tableDetails);
       await row.save();
+      console.log(row);
       res.status(200).send(row);
     } else if (ResultCode == 1032) {
       res.status(500).send(ResultDesc);
