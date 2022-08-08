@@ -170,8 +170,8 @@ app.post("/confirmation", async (req, res) => {
   try {
     console.log(
       `********************Start of Message**********************************
-      ${message.item} 
-      
+      ${message.Item} 
+
       *********************End of Message*************************************`
     );
     // const simple = await Simple.create(dbBody);
