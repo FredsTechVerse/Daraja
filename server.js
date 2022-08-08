@@ -155,10 +155,10 @@ app.post("/confirmation", async (req, res) => {
   let data = JSON.stringify(req.body.Body);
   console.log(`The main guy ====> ${data}`);
 
-  let { ResultCode, ResultDesc } = data;
+  let { ResultCode, ResultDesc } = data.stkCallback;
 
   console.log(`${ResultCode} ************* ${ResultDesc}`);
-  let { CallbackMetadata: message } = data;
+  let { CallbackMetadata: message } = data.stkCallback;
   // let dbBody = {
   //   count: 3,
   // };
