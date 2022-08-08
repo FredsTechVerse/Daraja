@@ -188,7 +188,9 @@ app.post("/confirmation", async (req, res) => {
       console.log(row);
       res.status(200).send(row);
     } else if (ResultCode == 1032) {
-      res.status(500).send(ResultDesc);
+      let errorMessage = `The transaction failed due to the following error : ${ResultDesc}`;
+      console.log(errorMessage);
+      res.status(500).send(errorMessage);
     }
   } catch (error) {
     res.status(500).send(error);
