@@ -152,6 +152,9 @@ app.get("/", (req, res) => {
 app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", async (req, res) => {
+  let data = req.body.Body;
+  console.log(`The main guy ====> ${data}`);
+
   let { ResultCode, ResultDesc } = req.body.Body;
 
   console.log(`${ResultCode} ************* ${ResultDesc}`);
@@ -163,7 +166,7 @@ app.post("/confirmation", async (req, res) => {
     console.log(
       `********************Start of Message**********************************
       ${message} 
-      ********************End of Message*****(*******************************`
+      *********************End of Message*************************************`
     );
     // const simple = await Simple.create(dbBody);
     // await simple.save();
