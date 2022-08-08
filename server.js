@@ -173,13 +173,15 @@ app.post("/confirmation", async (req, res) => {
       let transactionDate = clientDetails.Item[3].Value;
       let phoneNumber = clientDetails.Item[4].Value;
 
-      let tableDetails = [
+      let tableDetails = {
         amountTransacted,
         mpesaReceiptNumber,
         transactionDate,
         tillBalance,
         phoneNumber,
-      ];
+      };
+
+      console.log(tableDetails);
 
       const row = await TableDetail.create(tableDetails);
       await row.save();
