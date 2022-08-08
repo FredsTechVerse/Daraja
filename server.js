@@ -153,27 +153,49 @@ app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", async (req, res) => {
   // let data = JSON.stringify(req.body.Body);
-  let data = JSON.stringify(req.body.Body.stkCallback);
+  // PRIMARY DETAILS
+  //=================
 
-  let JsData = JSON.parse(data);
+  let mainBody = req.body.Body.stkCallback;
 
-  console.log(`The main guy ====> ${data}`);
-  console.log(`The secondary guy ====> ${JsData}`); //This is good. It works in destructuring phase but cannot be console.logged.
+  let {
+    MerchantRequestID,
+    CheckoutRequestID,
+    ResultCode,
+    ResultDesc,
+    CallbackMetadata: clientDetails,
+  } = mainBody;
 
-  let { ResultCode, ResultDesc } = JsData;
+  let amountTransacted = clientDetails.Item[0].Value;
+  let mpesaReceiptNumber = clientDetails.Item[1].Value;
+  let transactionDate = clientDetails.Item[2].Value;
+  let phoneNumber = clientDetails.Item[3].Value;
 
-  console.log(`${ResultCode} ************* ${ResultDesc}`);
-  let { CallbackMetadata: message } = JsData;
+  let tableDetails = [
+    amountTransacted,
+    mpesaReceiptNumber,
+    transactionDate,
+    phoneNumber,
+  ];
+
+  let dataTypes = [
+    typeof amountTransacted,
+    typeof mpesaReceiptNumber,
+    typeof transactionDate,
+    typeof phoneNumber,
+  ];
+
   // let dbBody = {
   //   count: 3,
   // };
   try {
-    console.log(
-      `********************Start of Message**********************************
-      ${message.Item} 
+    console.log(`=>${ResultCode} 
+             ==> ${ResultDesc}
+             ===> ${MerchantRequestID}
+             ====> ${CheckoutRequestID}`);
+    console.log(dataTypes);
+    console.log(tableDetails);
 
-      *********************End of Message*************************************`
-    );
     // const simple = await Simple.create(dbBody);
     // await simple.save();
     // res.status(200).send(simple);
