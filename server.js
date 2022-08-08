@@ -89,13 +89,9 @@ const obtainAccessToken = async (req, res, next) => {
   })
     .then(async (response) => {
       req.body.access_token = await response.data.access_token;
-      console.log(req.body);
       next();
     })
     .catch((error) => {
-      console.log(
-        `Woops! Error that occured while obtaining the Access Token : ${error}`
-      );
       res.status(500).json({ message: error });
     });
 };
@@ -122,25 +118,14 @@ const mpesaExpressInt = (req, res) => {
     },
   })
     .then(async (response) => {
-      // let { data } = response;
-      // console.log(data);
-      // res.status(200).json(data);
-
-      let dbBody = {
-        count: 2,
-      };
       try {
-        console.log(response.data);
-        const simple = await Simple.create(dbBody);
-        await simple.save();
-        console.log("Done creating the model.");
+        res.status(200).json(response);
       } catch (error) {
-        let err = error;
+        res.status(500).json(error);
       }
     })
     .catch((error) => {
-      console.log(`Mpesa Express error : ${error}`);
-      // res.status(302).json(error);
+      res.status(302).json(error);
     });
 };
 
@@ -159,7 +144,6 @@ app.post("/confirmation", async (req, res) => {
     let mainBody = req.body.Body.stkCallback;
 
     let strBody = JSON.stringify(mainBody);
-    console.log(strBody);
 
     let { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } =
       mainBody;
@@ -180,16 +164,11 @@ app.post("/confirmation", async (req, res) => {
         tillBalance,
         phoneNumber,
       };
-
-      console.log(tableDetails);
-
       const row = await TableDetail.create(tableDetails);
       await row.save();
-      console.log(row);
       res.status(200).send(row);
     } else if (ResultCode == 1032) {
       let errorMessage = `The transaction failed due to the following error : ${ResultDesc}`;
-      console.log(errorMessage);
       res.status(500).send(errorMessage);
     }
   } catch (error) {
