@@ -169,8 +169,9 @@ app.post("/confirmation", async (req, res) => {
 
   let amountTransacted = clientDetails.Item[0].Value;
   let mpesaReceiptNumber = clientDetails.Item[1].Value;
-  let transactionDate = clientDetails.Item[2].Value;
-  let phoneNumber = clientDetails.Item[3].Value;
+  let tillBalance = clientDetails.Item[2].Value;
+  let transactionDate = clientDetails.Item[3].Value;
+  let phoneNumber = clientDetails.Item[4].Value;
 
   let tableDetails = [
     amountTransacted,
