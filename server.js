@@ -152,7 +152,7 @@ app.get("/", (req, res) => {
 app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", async (req, res) => {
-  let message = req.body.Body.CallbackMetadata;
+  let message = req.body.Body;
   let dbBody = {
     count: 3,
   };
