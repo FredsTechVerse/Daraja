@@ -7,6 +7,7 @@ const port = process.env.PORT || "3003";
 const cors = require("cors");
 const Customer = require("./Models/Customer");
 const Simple = require("./Models/Simple");
+const TableDetail = require("./Models/TableDetail");
 const mongoose = require("mongoose");
 // ITEMS THAT NEED TO BE STORED IN A .ENV FILE
 //============================================
@@ -152,60 +153,39 @@ app.get("/", (req, res) => {
 app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", async (req, res) => {
-  // let data = JSON.stringify(req.body.Body);
-  // PRIMARY DETAILS
-  //=================
-
-  let mainBody = req.body.Body.stkCallback;
-  let stringBody = JSON.stringify(mainBody);
-
-  let {
-    MerchantRequestID,
-    CheckoutRequestID,
-    ResultCode,
-    ResultDesc,
-    CallbackMetadata: clientDetails,
-  } = mainBody;
-
-  let amountTransacted = clientDetails.Item[0].Value;
-  let mpesaReceiptNumber = clientDetails.Item[1].Value;
-  let tillBalance = clientDetails.Item[2].Value;
-  let transactionDate = clientDetails.Item[3].Value;
-  let phoneNumber = clientDetails.Item[4].Value;
-
-  let tableDetails = [
-    amountTransacted,
-    mpesaReceiptNumber,
-    transactionDate,
-    phoneNumber,
-  ];
-
-  let dataTypes = [
-    typeof amountTransacted,
-    typeof mpesaReceiptNumber,
-    typeof transactionDate,
-    typeof phoneNumber,
-  ];
-
-  // let dbBody = {
-  //   count: 3,
-  // };
   try {
-    console.log(`=>${ResultCode} 
-             ==> ${ResultDesc}
-             ===> ${MerchantRequestID}
-             ====> ${CheckoutRequestID}`);
-    console.log(stringBody);
-    console.log(dataTypes);
-    console.log(tableDetails);
+    // PRIMARY DETAILS
+    //=================
+    let mainBody = req.body.Body.stkCallback;
 
-    // const simple = await Simple.create(dbBody);
-    // await simple.save();
-    // res.status(200).send(simple);
-    res.status(200).send("Message Well received.");
+    let { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } =
+      mainBody;
+
+    if (ResultCode == 0) {
+      let { CallbackMetadata: clientDetails } = mainBody;
+
+      let amountTransacted = clientDetails.Item[0].Value;
+      let mpesaReceiptNumber = clientDetails.Item[1].Value;
+      let tillBalance = clientDetails.Item[2].Value;
+      let transactionDate = clientDetails.Item[3].Value;
+      let phoneNumber = clientDetails.Item[4].Value;
+
+      let tableDetails = [
+        amountTransacted,
+        mpesaReceiptNumber,
+        transactionDate,
+        tillBalance,
+        phoneNumber,
+      ];
+
+      const row = await TableDetail.create(tableDetails);
+      await row.save();
+      res.status(200).send(row);
+    } else if (ResultCode == 1032) {
+      res.status(500).send(ResultDesc);
+    }
   } catch (error) {
-    let err = error;
-    res.status(500).send(err);
+    res.status(500).send(error);
   }
 });
 
