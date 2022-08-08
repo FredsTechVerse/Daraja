@@ -153,6 +153,7 @@ app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", async (req, res) => {
   let message = req.body;
+  let message_js = JSON.parse(message);
   let dbBody = {
     count: 3,
   };
@@ -160,13 +161,14 @@ app.post("/confirmation", async (req, res) => {
     console.log(
       "********************Start of Body**********************************"
     );
-    console.log(req.body);
+    console.log(message_js);
     console.log(
       "********************End of Body**********************************"
     );
-    const simple = await Simple.create(dbBody);
-    await simple.save();
-    res.status(200).send(simple);
+    // const simple = await Simple.create(dbBody);
+    // await simple.save();
+    // res.status(200).send(simple);
+    res.status(200).send("Message Well received.");
   } catch (error) {
     let err = error;
     res.status(500).send(err);
