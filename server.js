@@ -152,7 +152,7 @@ app.get("/", (req, res) => {
 app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", async (req, res) => {
-  let data = req.body.Body;
+  let data = JSON.stringify(req.body.Body);
   console.log(`The main guy ====> ${data}`);
 
   let { ResultCode, ResultDesc } = req.body.Body;
