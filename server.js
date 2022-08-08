@@ -152,13 +152,15 @@ app.get("/", (req, res) => {
 app.post("/express", obtainAccessToken, mpesaExpressInt);
 
 app.post("/confirmation", async (req, res) => {
-  let data = JSON.stringify(req.body.Body);
+  // let data = JSON.stringify(req.body.Body);
+  let data = JSON.stringify(req.body.Body.stkCallback);
+
   console.log(`The main guy ====> ${data}`);
 
-  let { ResultCode, ResultDesc } = data.stkCallback;
+  let { ResultCode, ResultDesc } = data;
 
   console.log(`${ResultCode} ************* ${ResultDesc}`);
-  let { CallbackMetadata: message } = data.stkCallback;
+  let { CallbackMetadata: message } = data;
   // let dbBody = {
   //   count: 3,
   // };
