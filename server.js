@@ -155,10 +155,8 @@ app.post("/confirmation", async (req, res) => {
     // PRIMARY DETAILS
     //=================
     let mainBody = req.body.Body.stkCallback;
-
-    console.log(strBody);
-
     let strBody = JSON.stringify(mainBody);
+    console.log(strBody);
 
     let { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } =
       mainBody;
