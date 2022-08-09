@@ -170,6 +170,8 @@ app.post("/confirmation", async (req, res) => {
       let fName = customer_names.fName;
       let lName = customer_names.lName;
 
+      console.log(`Headed to the database ==>${fName},${lName}`);
+
       let tableDetails = {
         amountTransacted,
         mpesaReceiptNumber,
