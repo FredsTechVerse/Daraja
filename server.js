@@ -106,7 +106,7 @@ const mpesaExpressInt = (req, res) => {
     lName,
   };
 
-  console.log(`The customer names to be saved are ${fName} ${lName}`);
+  console.log(`The customer_names saved are ${fName} ${lName}`);
 
   axios({
     url: express_url,
@@ -154,6 +154,8 @@ app.post("/confirmation", async (req, res) => {
     //=================
     let mainBody = req.body.Body.stkCallback;
 
+    console.log(strBody);
+
     let strBody = JSON.stringify(mainBody);
 
     let { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } =
@@ -167,10 +169,11 @@ app.post("/confirmation", async (req, res) => {
       let tillBalance = clientDetails.Item[2].Value;
       let transactionDate = clientDetails.Item[3].Value;
       let phoneNumber = clientDetails.Item[4].Value;
-      let fName = customer_names.fName;
-      let lName = customer_names.lName;
 
-      console.log(`Headed to the database ==>${fName},${lName}`);
+      let firstName = customer_names.fName;
+      let lastName = customer_names.lName;
+
+      console.log(`Headed to the database ==>${firstName},${lastName}`);
 
       let tableDetails = {
         amountTransacted,
@@ -178,8 +181,8 @@ app.post("/confirmation", async (req, res) => {
         transactionDate,
         tillBalance,
         phoneNumber,
-        fName,
-        lName,
+        fName: firstName,
+        lName: lastName,
       };
       const row = await TableDetail.create(tableDetails);
       await row.save();
