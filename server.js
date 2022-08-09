@@ -51,6 +51,8 @@ let generate_timestamp = () => {
   return timestamp;
 };
 
+let customer_names = {};
+
 // CONSTANT VARIABLES
 //====================
 let item = "random";
@@ -97,6 +99,15 @@ const obtainAccessToken = async (req, res, next) => {
 };
 
 const mpesaExpressInt = (req, res) => {
+  let fName = req.body.fName;
+  let lName = req.body.lName;
+  customerNames = {
+    fName,
+    lName,
+  };
+
+  console.log(`The customer names to be saved are ${fName} ${lName}`);
+
   axios({
     url: express_url,
     method: "post",
@@ -156,6 +167,8 @@ app.post("/confirmation", async (req, res) => {
       let tillBalance = clientDetails.Item[2].Value;
       let transactionDate = clientDetails.Item[3].Value;
       let phoneNumber = clientDetails.Item[4].Value;
+      let fName = customer_names.fName;
+      let lName = customer_names.lName;
 
       let tableDetails = {
         amountTransacted,
@@ -163,6 +176,8 @@ app.post("/confirmation", async (req, res) => {
         transactionDate,
         tillBalance,
         phoneNumber,
+        fName,
+        lName,
       };
       const row = await TableDetail.create(tableDetails);
       await row.save();

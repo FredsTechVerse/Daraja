@@ -2,6 +2,14 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const TableDetailSchema = new Schema({
+  fName: {
+    type: String,
+    required: true,
+  },
+  lName: {
+    type: String,
+    required: true,
+  },
   amountTransacted: {
     type: Number,
     required: true,
