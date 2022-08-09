@@ -194,6 +194,7 @@ app.post("/confirmation", async (req, res) => {
       res.status(500).send(errorMessage);
     }
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 });
