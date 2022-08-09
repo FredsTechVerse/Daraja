@@ -51,7 +51,10 @@ let generate_timestamp = () => {
   return timestamp;
 };
 
-let customer_names = {};
+let customer_names = {
+  fName: "Alfredo",
+  lName: "Romanoz",
+};
 
 // CONSTANT VARIABLES
 //====================
