@@ -1,14 +1,16 @@
 const express = require("express");
 const request = require("request");
 const unirest = require("unirest");
-const app = express();
-const axios = require("axios");
-const port = process.env.PORT || "3003";
 const cors = require("cors");
-const Customer = require("./Models/Customer");
-const Simple = require("./Models/Simple");
-const TableDetail = require("./Models/TableDetail");
+const axios = require("axios");
 const mongoose = require("mongoose");
+
+const app = express();
+const port = process.env.PORT || "3003";
+
+//MODELS
+//======
+const TableDetail = require("./Models/TableDetail");
 // ITEMS THAT NEED TO BE STORED IN A .ENV FILE
 //============================================
 const consumer_key = "NYMLe9JJIx7NwW3hV2UJDTrU0QUJ3kXC";
@@ -51,10 +53,7 @@ let generate_timestamp = () => {
   return timestamp;
 };
 
-let customer_names = {
-  fName: "Alfredo",
-  lName: "Romanoz",
-};
+let customerNames = {};
 
 // CONSTANT VARIABLES
 //====================
@@ -109,7 +108,9 @@ const mpesaExpressInt = (req, res) => {
     lName,
   };
 
-  console.log(`The customer_names saved are ${fName} ${lName}`);
+  console.log(
+    `The customer_names to be  saved are :  ${customerNames.fName} ${customerNames.lName}`
+  );
 
   axios({
     url: express_url,
@@ -159,7 +160,7 @@ app.post("/confirmation", async (req, res) => {
     //=================
     let mainBody = req.body.Body.stkCallback;
     let strBody = JSON.stringify(mainBody);
-    console.log(strBody);
+    console.log(`The data headed to the DB is as follows : ${strBody}`);
 
     let { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } =
       mainBody;
@@ -172,31 +173,32 @@ app.post("/confirmation", async (req, res) => {
       let tillBalance = clientDetails.Item[2].Value;
       let transactionDate = clientDetails.Item[3].Value;
       let phoneNumber = clientDetails.Item[4].Value;
-
-      let firstName = customer_names.fName;
-      let lastName = customer_names.lName;
-
-      console.log(`Headed to the database ==>${firstName},${lastName}`);
+      let fName = customerNames.fName;
+      let lName = customerNames.lName;
 
       let tableDetails = {
+        fName,
+        lName,
         amountTransacted,
         mpesaReceiptNumber,
         transactionDate,
         tillBalance,
         phoneNumber,
-        fName: firstName,
-        lName: lastName,
       };
       const row = await TableDetail.create(tableDetails);
       await row.save();
-      res.status(200).send(row);
+      res.status(200).send(`This is the data saved to the DB : ${row}`);
     } else if (ResultCode == 1032) {
       let errorMessage = `The transaction failed due to the following error : ${ResultDesc}`;
       res.status(500).send(errorMessage);
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send(error);
+    res
+      .status(500)
+      .send(
+        `Woops the following error occured ${error} when communicating with the daraja server.`
+      );
   }
 });
 
