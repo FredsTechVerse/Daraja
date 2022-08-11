@@ -4,23 +4,23 @@ const unirest = require("unirest");
 const cors = require("cors");
 const axios = require("axios");
 const mongoose = require("mongoose");
-
 const app = express();
 const port = process.env.PORT || "3003";
+require("dotenv").config();
+
 
 //MODELS
 //======
 const TableDetail = require("./Models/TableDetail");
 // ITEMS THAT NEED TO BE STORED IN A .ENV FILE
 //============================================
-const consumer_key = "NYMLe9JJIx7NwW3hV2UJDTrU0QUJ3kXC";
-const consumer_secret = "YvHXGoIdK1yzcRT7";
-const connection_url =
-  "mongodb+srv://FredzTech:Beijingbike5@cluster0.6y5u8do.mongodb.net/?retryWrites=true&w=majority";
-const token_url =
-  "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-const express_url =
-  "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+const consumer_key = process.env.CONSUMER_KEY;
+const consumer_secret = process.env.CONSUMER_SECRET;
+const connection_url = process.env.CONNECTION_URL;
+const token_url =process.env.TOKEN_URL;
+const express_url =process.env.EXPRESS_URL;
+let tillNumber = process.env.TILL_NUMBER;
+let passKey =process.env.PASS_KEY;
 
 //KEY FUNCTIONS.
 //==============
@@ -58,9 +58,6 @@ let customerNames = {};
 // CONSTANT VARIABLES
 //====================
 let item = "random";
-let tillNumber = 174379;
-let passKey =
-  "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
 let timestamp = generate_timestamp();
 let password = passwordEncrypt(tillNumber, passKey, timestamp);
 // BRINGING THE DB ON BOARD
@@ -149,7 +146,7 @@ const mpesaExpressInt = (req, res) => {
 // ROUTES DEFINATION
 //===================
 app.get("/", (req, res) => {
-  res.status(200).send("Hakuna Matata from the daraja API");
+  res.status(200).send("Hakuna Matata from the daraja playground");
 });
 
 app.post("/express", obtainAccessToken, mpesaExpressInt);
@@ -187,25 +184,16 @@ app.post("/confirmation", async (req, res) => {
       };
       const row = await TableDetail.create(tableDetails);
       await row.save();
-      res.status(200).send(`This is the data saved to the DB : ${row}`);
+      console.log(`Transaction Success DB Data : ${row}`);
     } else if (ResultCode == 1032) {
-      let errorMessage = `The transaction failed due to the following error : ${ResultDesc}`;
-      res.status(500).send(errorMessage);
+      let errorMessage = `Transaction failed error : ${ResultDesc}`;
+      console.log(errorMessage);
     }
   } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .send(
-        `Woops the following error occured ${error} when communicating with the daraja server.`
-      );
+    console.log(`Woops the following error occured ${error} when communicating with the daraja server.`);
   }
 });
 
-app.post("/validation", (req, res) => {
-  let message = req.body;
-  res.status(200).send(message);
-});
 app.listen(port, () => {
   console.log(`Listening successfully on port ${port}`);
 });
