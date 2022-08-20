@@ -130,11 +130,17 @@ const mpesaExpressInt = (req, res) => {
     },
   })
     .then( (response) => {
-        console.log(response.data);
-        res.status(200).json(response.data);
+      if(response == " "){
+      res.status(500).json(`Saaasa kuna makosa imefanyika.`);
+      }else{
+        let response_sent = response.data.ResponseCode;
+        console.log(response_sent);
+        res.status(200).json(response_sent);
+      }
     }
     )
     .catch((error) => {
+      //THere is no time this will be called since there is no error.It a blank that is returned mehn.
       res.status(302).json(` Saaasa kuna makosa imefanyika: ${error}`);
     });
 };
