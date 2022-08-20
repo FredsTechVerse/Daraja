@@ -129,17 +129,13 @@ const mpesaExpressInt = (req, res) => {
       TransactionDesc: `Payment of ${item}`,
     },
   })
-    .then(async (response) => {
-      try {
+    .then( (response) => {
         console.log(response.data);
         res.status(200).json(response.data);
-      } catch (error) {
-        console.log(error);
-        res.status(500).json(error);
-      }
-    })
+    }
+    )
     .catch((error) => {
-      res.status(302).json(error);
+      res.status(302).json(` Saaasa kuna makosa imefanyika: ${error}`);
     });
 };
 
