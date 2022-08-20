@@ -137,10 +137,18 @@ const mpesaExpressInt = (req, res) => {
     }
     )
     .catch((error) => {
-      // Most probably called when its an axios error.
+      //IMPORTANCE OF FORM VALIDATION.
+      /* Happens as a result of the promise not being fulfilled.By default that is how axios behaves incase the request doesn't go through.
+      To avoid all this complexities of handling the errors,just do the right thing from the word go. I mean ensuring the phone number is correctly put.
+      Such that to the front end we shall only be sending successful results.Its the easiest thing to do to avoid this headache of handling and transmiitting 
+      error to the front-end */
+
+      // AXIOS ERROR DESTRUCTURING - Happens as a result of non_2xx status being returned.
+      // ==========================
+      // The error is a very big object and it has its categories.
       let  {message,code,name} = error;
       console.log(`This is from the catch error ${name} : ${code} : ${message}`);
-      res.status(500).json(message);
+      res.status(400).json(message);
     });
 };
 
