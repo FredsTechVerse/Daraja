@@ -142,8 +142,10 @@ const mpesaExpressInt = (req, res) => {
       // AXIOS ERROR DESTRUCTURING - Happens as a result of non_2xx status being returned.
       // ==========================
       // The error is a very big object and it has its categories.
-      let  {message,code,name} = error;
-      console.log(`This is from the catch error ${name} : ${code} : ${message}`);
+      let msg = JSON.stringify(error);
+      console.log(`Axios Backend Error ${msg}`)
+      // let  {message,code,name} = error;
+      // console.log(`This is from the catch error ${name} : ${code} : ${message}`);
       let client_message = "Ensure you have filled the contact detail correctly.Maze nimelengwa."
       res.status(500).json(client_message);
     });
