@@ -148,7 +148,8 @@ const mpesaExpressInt = (req, res) => {
       // The error is a very big object and it has its categories.
       let  {message,code,name} = error;
       console.log(`This is from the catch error ${name} : ${code} : ${message}`);
-      res.status(400).json(message);
+      let client_message = "Ensure you have filled the contact detail correctly."
+      res.status(400).json(client_message);
     });
 };
 
