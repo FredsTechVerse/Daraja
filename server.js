@@ -125,12 +125,14 @@ const mpesaExpressInt = (req, res) => {
   })
     .then( (response) => {
 
+      console.log(`Daraja initial response : ${response.data}`)
+
        if(response.data.ResponseCode == 0){
         let response_sent = response.data.ResponseCode;
-        console.log(`All is a go ${response_sent}`);//Monitoring the response sent.
+        console.log(`When cont is correct. ${response_sent}`);//Monitoring the response sent.
         res.status(200).json(response_sent);
        } else{
-        res.status(500).json(`Saaasa kuna makosa imefanyika mahali`);
+        res.status(200).json(`Saaasa kuna makosa imefanyika mahali`);
        }
     }
     )
