@@ -98,16 +98,10 @@ const obtainAccessToken = async (req, res, next) => {
 };
 
 const mpesaExpressInt = (req, res) => {
-  let fName = req.body.fName;
-  let lName = req.body.lName;
   customerNames = {
-    fName,
-    lName,
+    fName:req.body.fName,
+    lName:req.body.lName,
   };
-
-  console.log(
-    `The customer_names to be  saved are :  ${customerNames.fName} ${customerNames.lName}`
-  );
 
   axios({
     url: express_url,
@@ -130,18 +124,19 @@ const mpesaExpressInt = (req, res) => {
     },
   })
     .then( (response) => {
-      if(response == " "){
-      res.status(500).json(`Saaasa kuna makosa imefanyika.`);
-      }else{
+
+       if(response.data.ResponseCode == 0){
         let response_sent = response.data.ResponseCode;
-        console.log(response_sent);
+        console.log(response_sent);//Monitoring the response sent.
         res.status(200).json(response_sent);
-      }
+       } else{
+        res.status(500).json(`Saaasa kuna makosa imefanyika mahali`);
+       }
     }
     )
     .catch((error) => {
-      //THere is no time this will be called since there is no error.It a blank that is returned mehn.
-      res.status(302).json(` Saaasa kuna makosa imefanyika: ${error}`);
+      console.error(error);
+      res.status(500).json(`Error while communicating with daraja server : ${error}`);
     });
 };
 
@@ -159,7 +154,7 @@ app.post("/confirmation", async (req, res) => {
     //=================
     let mainBody = req.body.Body.stkCallback;
     let strBody = JSON.stringify(mainBody);
-    console.log(`The data headed to the DB is as follows : ${strBody}`);
+    console.log(`Results are as follows : ${strBody}`);
 
     let { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } =
       mainBody;
@@ -186,13 +181,13 @@ app.post("/confirmation", async (req, res) => {
       };
       const row = await TableDetail.create(tableDetails);
       await row.save();
-      console.log(`Transaction Success DB Data : ${row}`);
-    } else if (ResultCode == 1032) {
-      let errorMessage = `Transaction failed error : ${ResultDesc}`;
+      console.log(`Data save successfully to the DB as follows => ${row}`);
+    } else {
+      let errorMessage = `Transaction failed due to => ${ResultDesc}`;
       console.log(errorMessage);
     }
   } catch (error) {
-    console.log(`Woops the following error occured ${error} when communicating with the daraja server.`);
+    console.log(`Woops!The following error occured while communicating with the daraja server =>${error}`);
   }
 });
 
