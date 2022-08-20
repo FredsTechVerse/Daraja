@@ -132,13 +132,15 @@ const mpesaExpressInt = (req, res) => {
         console.log(`When cont is correct. ${response_sent}`);//Monitoring the response sent.
         res.status(200).json(response_sent);
        } else{
-        res.status(200).json(`Saaasa kuna makosa imefanyika mahali`);
+        res.status(500).json(`Saaasa kuna makosa imefanyika mahali`);
        }
     }
     )
     .catch((error) => {
-      console.log(`This is from the catch error ${error.message}`);
-      res.status(500).json(`Error while communicating with daraja server : ${error.errorMessage}`);
+      // Most probably called when its an axios error.
+      let  {message,code,name} = error;
+      console.log(`This is from the catch error ${name} : ${code} : ${message}`);
+      res.status(500).json(message);
     });
 };
 
