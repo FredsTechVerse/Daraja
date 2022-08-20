@@ -147,7 +147,7 @@ const mpesaExpressInt = (req, res) => {
       // let  {message,code,name} = error;
       // console.log(`This is from the catch error ${name} : ${code} : ${message}`);
       let client_message = "Ensure you have filled the contact detail correctly.Maze nimelengwa."
-      res.status(500).json(client_message);
+      res.status(400).json(client_message);
     });
 };
 
