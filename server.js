@@ -127,7 +127,7 @@ const mpesaExpressInt = (req, res) => {
 
        if(response.data.ResponseCode == 0){
         let response_sent = response.data.ResponseCode;
-        console.log(response_sent);//Monitoring the response sent.
+        console.log(`All is a go ${response_sent}`);//Monitoring the response sent.
         res.status(200).json(response_sent);
        } else{
         res.status(500).json(`Saaasa kuna makosa imefanyika mahali`);
@@ -136,7 +136,7 @@ const mpesaExpressInt = (req, res) => {
     )
     .catch((error) => {
       console.error(error.errorMessage);
-      res.status(500).json(`Error while communicating with daraja server : ${error}`);
+      res.status(500).json(`Error while communicating with daraja server : ${error.errorMessage}`);
     });
 };
 
