@@ -124,32 +124,28 @@ const mpesaExpressInt = (req, res) => {
     },
   })
     .then( (response) => {
-
-      console.log(`Daraja initial response : ${response.data}`)
-
+//THIS IS ONLY CALLED WHEN THE DAMN PROMISE IS FULFILLED.
+// Ni either a status of 0 ama unalengwa. Of which ukilengwa inahandliwa kama error.Since the promise fails to fulfill.
        if(response.data.ResponseCode == 0){
         let response_sent = response.data.ResponseCode;
         console.log(`When cont is correct. ${response_sent}`);//Monitoring the response sent.
         res.status(200).json(response_sent);
-       } else{
-        res.status(500).json(`Saaasa kuna makosa imefanyika mahali`);
        }
     }
     )
-    .catch((error) => {
-      //IMPORTANCE OF FORM VALIDATION.
+    .catch((error) => {//THIS IS CALLED WHEN THE PROMISE THAT AXIOS MADE IS REJECTED.PART & PARCEL OF ASYNCHRONOUS PROGRAMMING.
       /* Happens as a result of the promise not being fulfilled.By default that is how axios behaves incase the request doesn't go through.
       To avoid all this complexities of handling the errors,just do the right thing from the word go. I mean ensuring the phone number is correctly put.
       Such that to the front end we shall only be sending successful results.Its the easiest thing to do to avoid this headache of handling and transmiitting 
-      error to the front-end */
+      error to the front-end #FORM VALIDATION IS THE REMEDUE TO ALL THIS HEADACHE but it was a nice ride all the same. */ 
 
       // AXIOS ERROR DESTRUCTURING - Happens as a result of non_2xx status being returned.
       // ==========================
       // The error is a very big object and it has its categories.
       let  {message,code,name} = error;
       console.log(`This is from the catch error ${name} : ${code} : ${message}`);
-      let client_message = "Ensure you have filled the contact detail correctly."
-      res.status(400).json(client_message);
+      let client_message = "Ensure you have filled the contact detail correctly.Maze nimelengwa."
+      res.status(500).json(client_message);
     });
 };
 
