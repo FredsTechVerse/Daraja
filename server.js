@@ -137,7 +137,7 @@ const mpesaExpressInt = (req, res) => {
     }
     )
     .catch((error) => {
-      console.error(`THis is from the catch error ${error.errorMessage}`);
+      console.log(`This is from the catch error ${error.message}`);
       res.status(500).json(`Error while communicating with daraja server : ${error.errorMessage}`);
     });
 };
