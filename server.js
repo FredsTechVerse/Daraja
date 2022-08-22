@@ -8,7 +8,6 @@ const app = express();
 const port = process.env.PORT || "3003";
 require("dotenv").config();
 
-
 //MODELS
 //======
 const TableDetail = require("./Models/TableDetail");
@@ -17,10 +16,10 @@ const TableDetail = require("./Models/TableDetail");
 const consumer_key = process.env.CONSUMER_KEY;
 const consumer_secret = process.env.CONSUMER_SECRET;
 const connection_url = process.env.CONNECTION_URL;
-const token_url =process.env.TOKEN_URL;
-const express_url =process.env.EXPRESS_URL;
+const token_url = process.env.TOKEN_URL;
+const express_url = process.env.EXPRESS_URL;
 let tillNumber = process.env.TILL_NUMBER;
-let passKey =process.env.PASS_KEY;
+let passKey = process.env.PASS_KEY;
 
 //KEY FUNCTIONS.
 //==============
@@ -99,8 +98,8 @@ const obtainAccessToken = async (req, res, next) => {
 
 const mpesaExpressInt = (req, res) => {
   customerNames = {
-    fName:req.body.fName,
-    lName:req.body.lName,
+    fName: req.body.fName,
+    lName: req.body.lName,
   };
 
   axios({
@@ -123,38 +122,56 @@ const mpesaExpressInt = (req, res) => {
       TransactionDesc: `Payment of ${item}`,
     },
   })
-    .then( (response) => {
-//THIS IS ONLY CALLED WHEN THE DAMN PROMISE IS FULFILLED.
-// Ni either a status of 0 ama unalengwa. Of which ukilengwa inahandliwa kama error.Since the promise fails to fulfill.
-       if(response.data.ResponseCode == 0){
+    .then((response) => {
+      //THIS IS ONLY CALLED WHEN THE DAMN PROMISE IS FULFILLED.
+      // Ni either a status of 0 ama unalengwa. Of which ukilengwa inahandliwa kama error.Since the promise fails to fulfill.
+      if (response.data.ResponseCode == 0) {
         let response_sent = response.data.ResponseCode;
-        console.log(`When cont is correct. ${response_sent}`);//Monitoring the response sent.
+        console.log(`When cont is correct. ${response_sent}`); //Monitoring the response sent.
         res.status(200).json(response_sent);
-       }
-    }
-    )
-    .catch((error) => {//THIS IS CALLED WHEN THE PROMISE THAT AXIOS MADE IS REJECTED.PART & PARCEL OF ASYNCHRONOUS PROGRAMMING.
+      }
+    })
+    .catch((error) => {
+      //THIS IS CALLED WHEN THE PROMISE THAT AXIOS MADE IS REJECTED.PART & PARCEL OF ASYNCHRONOUS PROGRAMMING.
       /* Happens as a result of the promise not being fulfilled.By default that is how axios behaves incase the request doesn't go through.
       To avoid all this complexities of handling the errors,just do the right thing from the word go. I mean ensuring the phone number is correctly put.
       Such that to the front end we shall only be sending successful results.Its the easiest thing to do to avoid this headache of handling and transmiitting 
-      error to the front-end #FORM VALIDATION IS THE REMEDUE TO ALL THIS HEADACHE but it was a nice ride all the same. */ 
+      error to the front-end #FORM VALIDATION IS THE REMEDUE TO ALL THIS HEADACHE but it was a nice ride all the same. */
 
       // AXIOS ERROR DESTRUCTURING - Happens as a result of non_2xx status being returned.
       // ==========================
       // The error is a very big object and it has its categories.
       let msg = JSON.stringify(error);
-      console.log(`Axios Backend Error ${msg}`)
+      console.log(`Axios Backend Error ${msg}`);
       // let  {message,code,name} = error;
       // console.log(`This is from the catch error ${name} : ${code} : ${message}`);
-      let client_message = "Error!Ensure you have filled the contact details correctly."
-      res.status(400).json(client_message);
+      let client_message =
+        "Error!Ensure you have filled the contact details correctly.";
+      res.status(400).json(client_message); //I send a message to the front-end which falls under the other category.
     });
 };
 
 // ROUTES DEFINATION
 //===================
 app.get("/", (req, res) => {
-  res.status(200).send("Hakuna Matata from the daraja playground");
+  res.status(200).send("Hakuna Matata from the daraja application");
+});
+app.get("/paymentHIstory", async (req, res) => {
+  try {
+    const data = await TableDetail.find().limit(10);
+    const filter = data.map((payment) => {
+      let { fName, amountTransacted, mpesaReceiptNumber } = payment;
+      return {
+        Name: fName,
+        Amount: amountTransacted,
+        ReceiptNo: mpesaReceiptNumber,
+      };
+    });
+    console.log(data);
+    res.status(200).json(filter);
+  } catch (e) {
+    console.log(`Error Occured ===> ${e.message}`);
+  }
 });
 
 app.post("/express", obtainAccessToken, mpesaExpressInt);
@@ -198,7 +215,9 @@ app.post("/confirmation", async (req, res) => {
       console.log(errorMessage);
     }
   } catch (error) {
-    console.log(`Woops!The following error occured while communicating with the daraja server =>${error}`);
+    console.log(
+      `Woops!The following error occured while communicating with the daraja server =>${error}`
+    );
   }
 });
 
