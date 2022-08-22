@@ -26,6 +26,11 @@ const TableDetailSchema = new Schema({
   createdAt: {
     type: Date,
     default: () => Date.now(),
+    mutable: false,
+  },
+  updatedAt: {
+    type: Date,
+    default: () => Date.now(),
   },
   phoneNumber: {
     type: Number,

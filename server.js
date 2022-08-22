@@ -156,6 +156,25 @@ const mpesaExpressInt = (req, res) => {
 app.get("/", (req, res) => {
   res.status(200).send("Hakuna Matata from the daraja application");
 });
+app.get("/user", async (req, res) => {
+  const user = await TableDetail.findOne({ amountTransacted: { $eq: 10 } });
+  console.log(`User found ==> ${user}`);
+  const user_1 = await TableDetail.where("_id")
+    .equals("62fbc717472ad262f97a5d39")
+    .select("amountTransacted");
+
+  user.fName = "Mary";
+  user.amountTransacted = 10;
+  console.log(`User updated ==> ${user}`);
+  await user.save();
+
+  const user_2 = await TableDetail.where("amountTransacted")
+    .lt("5")
+    .select("amountTransacted")
+    .skip(7);
+
+  res.status(200).json(user_2);
+});
 app.get("/paymentHIstory", async (req, res) => {
   try {
     const data = await TableDetail.find().limit(10);
