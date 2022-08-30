@@ -102,6 +102,8 @@ const mpesaExpressInt = (req, res) => {
     lName: req.body.lName,
   };
 
+  console.log();
+
   axios({
     url: express_url,
     method: "post",
