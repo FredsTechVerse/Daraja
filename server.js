@@ -123,6 +123,7 @@ const mpesaExpressInt = (req, res) => {
     },
   })
     .then((response) => {
+      console.log(response);
       //THIS IS ONLY CALLED WHEN THE DAMN PROMISE IS FULFILLED.
       // Ni either a status of 0 ama unalengwa. Of which ukilengwa inahandliwa kama error.Since the promise fails to fulfill.
       if (response.data.ResponseCode == 0) {
@@ -175,21 +176,15 @@ app.get("/user", async (req, res) => {
 
   res.status(200).json(user_2);
 });
-app.get("/paymentHIstory", async (req, res) => {
+app.get("/history", async (req, res) => {
   try {
-    const data = await TableDetail.find().limit(10);
-    const filter = data.map((payment) => {
-      let { fName, amountTransacted, mpesaReceiptNumber } = payment;
-      return {
-        Name: fName,
-        Amount: amountTransacted,
-        ReceiptNo: mpesaReceiptNumber,
-      };
-    });
-    console.log(data);
-    res.status(200).json(filter);
+    const data = await TableDetail.find();
+    console.log(`History fetched ==>${data}`);
+    res.status(200).json(data);
   } catch (e) {
-    console.log(`Error Occured ===> ${e.message}`);
+    console.log(
+      `Error that occured while fetching history data ===> ${e.message}`
+    );
   }
 });
 
