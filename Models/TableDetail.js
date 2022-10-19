@@ -26,7 +26,7 @@ const TableDetailSchema = new Schema({
   createdAt: {
     type: Date,
     default: () => Date.now(),
-    mutable: false,
+    immutable: true,
   },
   updatedAt: {
     type: Date,
